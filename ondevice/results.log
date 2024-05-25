@@ -1,0 +1,407 @@
+=== Model: resnet50, Framework: tflite, Latency Constraint: 10 ===
+Baseline Latency: 108.172
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.440599999999996
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 1123.5385766029358
+#Blocks: 16, #Subnets: 9565938
+
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 6 ===
+Baseline Latency: 13.63
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.53
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 185.13242506980896
+#Blocks: 19, #Subnets: 19513
+
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 8 ===
+Baseline Latency: 13.44
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.940000000000001
+Best Accuracy: {'acc1': 55.08251989621016, 'acc5': 78.25865381100199}
+Time Elapsed: 190.79248523712158
+#Blocks: 19, #Subnets: 19513
+
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 10 ===
+Baseline Latency: 13.38
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 9.83
+Best Accuracy: {'acc1': 65.27500098243895, 'acc5': 86.09902387482411}
+Time Elapsed: 209.13646531105042
+#Blocks: 19, #Subnets: 19513
+
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 10 ===
+Baseline Latency: 10.9071
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 6.9730799999999995
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 370.26389622688293
+#Blocks: 19, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 20 ===
+Baseline Latency: 11.011700000000001
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 6.97178
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 378.3622715473175
+#Blocks: 19, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 4 ===
+Baseline Latency: 10.9664
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 6.95801
+Best Accuracy: {'acc1': 52.37367203806788, 'acc5': 76.8630679371057}
+Time Elapsed: 365.4690511226654
+#Blocks: 19, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 40 ===
+Baseline Latency: 10.9644
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 9.75895
+Best Accuracy: {'acc1': 68.81100788196461, 'acc5': 88.14928064754193}
+Time Elapsed: 412.2925179004669
+#Blocks: 19, #Subnets: 19513
+
+
+
+
+
+
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 20 ===
+Baseline Latency: 75.36
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 28.69
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 382.33740067481995
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 30 ===
+Baseline Latency: 75.48
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 28.54
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 380.75377011299133
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 40 ===
+Baseline Latency: 75.77
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 37.7
+Best Accuracy: {'acc1': 69.48135952256204, 'acc5': 88.925477283425}
+Time Elapsed: 419.4984905719757
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 50 ===
+Baseline Latency: 75.65
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 45.37
+Best Accuracy: {'acc1': 73.27609863095816, 'acc5': 90.81108628865613}
+Time Elapsed: 478.114643573761
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 60 ===
+Baseline Latency: 75.57
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 56.03
+Best Accuracy: {'acc1': 76.98067349018132, 'acc5': 92.70845583732108}
+Time Elapsed: 501.2689735889435
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 70 ===
+Baseline Latency: 75.48
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 64.42
+Best Accuracy: {'acc1': 76.79250460920828, 'acc5': 92.80646046702755}
+Time Elapsed: 518.9326405525208
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 80 ===
+Baseline Latency: 75.58
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 71.5
+Best Accuracy: {'acc1': 79.6111176466969, 'acc5': 94.1354031937224}
+Time Elapsed: 469.32877111434937
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 90 ===
+Baseline Latency: 75.51
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 71.46
+Best Accuracy: {'acc1': 79.6111176466969, 'acc5': 94.1354031937224}
+Time Elapsed: 442.1594588756561
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 100 ===
+Baseline Latency: 75.52
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 71.1
+Best Accuracy: {'acc1': 79.6111176466969, 'acc5': 94.1354031937224}
+Time Elapsed: 459.30951619148254
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 110 ===
+Baseline Latency: 75.43
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 71.03
+Best Accuracy: {'acc1': 79.6111176466969, 'acc5': 94.1354031937224}
+Time Elapsed: 495.4063129425049
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 120 ===
+Baseline Latency: 75.45
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 71.15
+Best Accuracy: {'acc1': 79.6111176466969 'acc5': 94.1354031937224}
+Time Elapsed: 455.261593580246
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: ncnn, Latency Constraint: 130 ===
+Baseline Latency: 75.66
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 71.35
+Best Accuracy: {'acc1': 79.6111176466969, 'acc5': 94.1354031937224}
+Time Elapsed: 464.19821190834045
+#Blocks: 18, #Subnets: 10609
+=== Model: resnet50, Framework: tflite, Latency Constraint: 20 ===
+Baseline Latency: 106.16
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.2715
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 633.0087008476257
+#Blocks: 18, #Subnets: 10609
+
+=== Model: resnet50, Framework: tflite, Latency Constraint: 30 ===
+Baseline Latency: 107.407
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.350300000000004
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 637.5346975326538
+#Blocks: 18, #Subnets: 10609
+
+=== Model: resnet50, Framework: tflite, Latency Constraint: 40 ===
+Baseline Latency: 107.984
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.2013
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 637.7421429157257
+#Blocks: 18, #Subnets: 10609
+
+=== Model: resnet50, Framework: tflite, Latency Constraint: 50 ===
+Baseline Latency: 107.715
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.3535
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 634.7934184074402
+#Blocks: 47, #Subnets: 10609
+
+=== Model: resnet50, Framework: tflite, Latency Constraint: 60 ===
+Baseline Latency: 107.88
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.3662
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 683.3194053173065
+#Blocks: 47, #Subnets: 10609
+=== Model: resnet50, Framework: tflite, Latency Constraint: 70 ===
+Baseline Latency: 106.594
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.2012
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 684.0614805221558
+#Blocks: 47, #Subnets: 10609
+=== Model: resnet50, Framework: tflite, Latency Constraint: 80 ===
+Baseline Latency: 106.187
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.3045
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 673.8575897216797
+#Blocks: 47, #Subnets: 10609
+=== Model: resnet50, Framework: tflite, Latency Constraint: 90 ===
+Baseline Latency: 107.087
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.359199999999994
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 718.9071590900421
+#Blocks: 47, #Subnets: 10609
+=== Model: resnet50, Framework: tflite, Latency Constraint: 100 ===
+Baseline Latency: 107.14
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.399300000000004
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 712.790554523468
+#Blocks: 47, #Subnets: 10609
+=== Model: resnet50, Framework: tflite, Latency Constraint: 110 ===
+Baseline Latency: 107.124
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.358599999999996
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 661.8050665855408
+#Blocks: 47, #Subnets: 10609
+=== Model: resnet50, Framework: tflite, Latency Constraint: 120 ===
+Baseline Latency: 107.64
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.3202
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 670.7780952453613
+#Blocks: 47, #Subnets: 10609
+=== Model: resnet50, Framework: tflite, Latency Constraint: 130 ===
+Baseline Latency: 106.836
+Baseline Accuracy: {'acc1': 80.17954447808823, 'acc5': 94.496060220622}
+Best Latency: 40.388
+Best Accuracy: {'acc1': 62.89152848141538, 'acc5': 84.49958837817887}
+Time Elapsed: 671.6081049442291
+#Blocks: 47, #Subnets: 10609
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 4 ===
+Baseline Latency: 13.49
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.58
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 184.36120986938477
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 5 ===
+Baseline Latency: 13.4
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.49
+Best Accuracy: {'acc1': 52.37367203806788, 'acc5': 76.8630679371057}
+Time Elapsed: 203.65472960472107
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 6 ===
+Baseline Latency: 13.52
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.59
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 227.56293749809265
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 7 ===
+Baseline Latency: 13.36
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.51
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 206.14751625061035
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 8 ===
+Baseline Latency: 13.24
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.57
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 207.95299458503723
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 9 ===
+Baseline Latency: 13.25
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 8.87
+Best Accuracy: {'acc1': 61.04512132987631, 'acc5': 83.24512917099409}
+Time Elapsed: 210.7279770374298
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 10 ===
+Baseline Latency: 13.34
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 9.69
+Best Accuracy: {'acc1': 65.2632404250976, 'acc5': 85.95397702861297}
+Time Elapsed: 227.8613407611847
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 11 ===
+Baseline Latency: 13.26
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 10.87
+Best Accuracy: {'acc1': 67.37622015833915, 'acc5': 87.32212160563515}
+Time Elapsed: 227.86527800559998
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 12 ===
+Baseline Latency: 13.21
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 11.59
+Best Accuracy: {'acc1': 68.89725195268474, 'acc5': 88.29824768267392}
+Time Elapsed: 227.08116602897644
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 13 ===
+Baseline Latency: 13.32
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 12.7
+Best Accuracy: {'acc1': 70.86126465468243, 'acc5': 89.68207299145261}
+Time Elapsed: 229.76938939094543
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 14 ===
+Baseline Latency: 13.37
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 13.3
+Best Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Time Elapsed: 227.1640453338623
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 15 ===
+Baseline Latency: 13.45
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 13.21
+Best Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Time Elapsed: 225.23178935050964
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 16 ===
+Baseline Latency: 13.4
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 13.44
+Best Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Time Elapsed: 249.15999245643616
+#Blocks: 49, #Subnets: 19513
+
+
+
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 4 ===
+Baseline Latency: 10.9092
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.01724
+Best Accuracy: {'acc1': 52.37367203806788, 'acc5': 76.8630679371057}
+Time Elapsed: 397.62333726882935
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 5 ===
+Baseline Latency: 10.975200000000001
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 6.965520000000001
+Best Accuracy: {'acc1': 52.37367203806788, 'acc5': 76.8630679371057}
+Time Elapsed: 401.258309841156
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 6 ===
+Baseline Latency: 11.0528
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 6.99773
+Best Accuracy: {'acc1': 52.37367203806788, 'acc5': 76.8630679371057}
+Time Elapsed: 405.8705208301544
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 7 ===
+Baseline Latency: 10.9602
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 6.94426
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 400.41418623924255
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 8 ===
+Baseline Latency: 10.9835
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 6.980300000000001
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 397.61652541160583
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 9 ===
+Baseline Latency: 10.936
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.018890000000001
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 438.3746826648712
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 10 ===
+Baseline Latency: 10.953700000000001
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 6.937729999999999
+Best Accuracy: {'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed: 437.9492235183716
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 11 ===
+Baseline Latency: 10.9878
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 6.9341800000000005
+Best Accuracy: {'acc1': 52.37367203806788, 'acc5': 76.8630679371057}
+Time Elapsed: 396.64109325408936
+#Blocks: 49, #Subnets: 19513
+=== Model: mobilenetv2_100, Framework: tflite, Latency Constraint: 12 ===
+Baseline Latency: 10.979899999999999
+Baseline Accuracy: {'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+Best Latency: 7.00166
+Best Accuracy: {'acc1': 52.37367203806788, 'acc5': 76.8630679371057}
+Time Elapsed: 436.0859432220459
+#Blocks: 49, #Subnets: 19513
+
+
+
+=== Model: mobilenetv2_100, Framework: ncnn, Latency Constraint: 4 ===
+Baseline Latency	13.38
+Baseline Accuracy	{'acc1': 72.88408013157293, 'acc5': 90.90517072615178}
+LUT Time Cost	71.34771275520325
+Evolution Time Cost (excluded LUT)	110.83528065681458
+Best Latency	7.57
+Best Accuracy	{'acc1': 52.789211651462864, 'acc5': 76.9257908998726}
+Time Elapsed	110.83528065681458
+#Blocks	49		#Subnets	19513
