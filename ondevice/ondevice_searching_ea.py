@@ -1,9 +1,6 @@
 import argparse
 import os
 
-
-
-os.environ["CUDA_VISIBLE_DEVICES"] = '4'
 import logging
 import torch.nn as nn
 import torchvision.utils
@@ -135,6 +132,7 @@ parser.add_argument('--method', default='AdaptiveNet',type=str)
 parser.add_argument('--time-budget', default=40, type=int)
 parser.add_argument('--framework', default='ncnn', type=str)
 parser.add_argument('--device', default='samsung1', type=str)
+parser.add_argument("--command", default="ncnn_cpu_f0_fp16", type=str)
 
 args = parser.parse_args()
 
@@ -146,10 +144,10 @@ python3 ondevice_searchin_ea.py \\
     --device {samsung0|samsung1|redmi0|honor0}""")
 
 if args.model == 'resnet50':
-    args.model_path = '../weights/resnet1epoch59acc69.pth'
+    args.model_path = 'weights/resnet1epoch59acc69.pth'
 elif args.model == 'mbv2':
     args.model = 'mobilenetv2_100'
-    args.model_path = '../weights/mbv2_100_1epoch44_best.pth'
+    args.model_path = 'weights/mbv2_100_1epoch44_best.pth'
 else:
     raise ValueError("args.model")
 
@@ -159,13 +157,13 @@ else:
     subcommand = '70'
 
 if args.framework == 'ncnn':
-    BACKEND_CONFIG = f'{args.device}_ncnn_cpu'
-    COMMAND_CONFIG = f'ncnn_cpu_{subcommand}'
-    EVALUATE_CONFIG = 'im1k_gpu0'
+    BACKEND_CONFIG = f'{args.device}'
+    COMMAND_CONFIG = f'{args.command}'
+    EVALUATE_CONFIG = 'im1k_gpu0_128'
 elif args.framework == 'tflite':
-    BACKEND_CONFIG = f'{args.device}_tflite_cpu'
-    COMMAND_CONFIG = f'tflite_cpu_fp32_{subcommand}'
-    EVALUATE_CONFIG = 'im1k_gpu0'
+    BACKEND_CONFIG = f'{args.device}'
+    COMMAND_CONFIG = f'{args.command}'
+    EVALUATE_CONFIG = 'im1k_gpu0_128'
 else:
     raise ValueError("args.framework")
 
