@@ -181,12 +181,15 @@ def test_lat(block, input, test_times, block_idx=0, choice_idx=0):
 
 def get_resnet_lats(model, batchsize, test_times=500):
     model.eval()
-    model.cuda()
-    x = torch.rand(batchsize, 3, 224, 224).cuda()
+    x = torch.rand(batchsize, 3, 224, 224)
+    if arg.GPU:
+        model.cuda()
+        x.cuda()
     lats = []
     layers = [model.conv1, model.bn1, model.act1, model.maxpool]
     former_layers = nn.Sequential(*layers)
-    former_layers.cuda()
+    if args.GPU:
+        former_layers.cuda()
     lats.append(test_lat(former_layers, x, test_times, 99, 98))
     x = former_layers(x)
     for blockidx in range(len(model.multiblocks)):
@@ -201,12 +204,15 @@ def get_resnet_lats(model, batchsize, test_times=500):
 
 def get_mbv_lats(model, batchsize, test_times=1000):
     model.eval()
-    model.cuda()
-    x = torch.rand(batchsize, 3, 224, 224).cuda()
+    x = torch.rand(batchsize, 3, 224, 224)
+    if args.GPU:
+        model.cuda()
+        x.cuda()
     lats = []
     layers = [model.conv_stem, model.bn1, model.act1]
     former_layers = nn.Sequential(*layers)
-    former_layers.cuda()
+    if args.GPU:
+        former_layers.cuda()
     lats.append(test_lat(former_layers, x, test_times))
     x = former_layers(x)
     for blockidx in range(len(model.multiblocks)):
@@ -241,7 +247,8 @@ def validate_baseline(model, loader, subnet, args, loss_fn, lats):
                 input = input.contiguous(memory_format=torch.channels_last)
             # with amp_autocast():
             output = model(input, subnet,batch_idx=batch_idx,infer_type=0)
-            torch.cuda.synchronize()
+            if args.GPU:
+                torch.cuda.synchronize()
 
             if isinstance(output, (tuple, list)):
                 output = output[0]
@@ -260,8 +267,9 @@ def validate_baseline(model, loader, subnet, args, loss_fn, lats):
                 acc5 = reduce_tensor(acc5, args.world_size)
             else:
                 reduced_loss = loss.data
-
-            torch.cuda.synchronize()
+            
+            if args.GPU:
+                torch.cuda.synchronize()
 
             losses_m.update(reduced_loss.item(), input.size(0))
             top1_m.update(acc1.item(), output.size(0))
@@ -307,7 +315,8 @@ def validate(model, loader, subnet, args, loss_fn, lats,infer_type=2):
             s2 = time.time()
             t1 = time.time()
             output = model(input, subnet,batch_idx=batch_idx,infer_type=infer_type)
-            torch.cuda.synchronize()
+            if args.GPU:
+                torch.cuda.synchronize()
             infer_time += time.time()-s2
             s3 = time.time()
             if batch_idx >= args.warmupbatches:
@@ -329,8 +338,8 @@ def validate(model, loader, subnet, args, loss_fn, lats,infer_type=2):
                 acc5 = reduce_tensor(acc5, args.world_size)
             else:
                 reduced_loss = loss.data
-
-            torch.cuda.synchronize()
+            if args.GPU:
+                torch.cuda.synchronize()
 
             losses_m.update(reduced_loss.item(), input.size(0))
             top1_m.update(acc1.item(), output.size(0))
@@ -391,7 +400,8 @@ def main():
     global_var.set_value('validated_feature', set())
     global_var.set_value('need_save_feature', set())
     model.load_state_dict(torch.load(args.model_path, map_location=torch.device('cpu')), strict=True)
-    model.cuda()
+    if args.GPU:
+        model.cuda()
     if args.method == "AdaptiveNet":
         mytools.load_data(model,args.model,args.data_dir,args.save_path, method = args.method, load_times=args.load_times,batch_size=args.batch_size,data_len=args.data_len)
     elif args.method == "BaseLine0":
@@ -416,7 +426,9 @@ def main():
         model.apply_subnet(subnet)
         dummy_input = torch.randn(1, 3, 224, 224)
         from thop import profile
-        flops, _ = profile(model, inputs=(dummy_input.cuda(),), verbose=False)
+        if args.GPU:
+            dummy_input.cuda()
+        flops, _ = profile(model, inputs=(dummy_input,), verbose=False)
         latency = evaluate_latency(model, (1, 3, 224, 224), BACKEND_CONFIG, COMMAND_CONFIG)
         accuracy = evaluate_accuracy(model, EVALUATE_CONFIG)
         return flops, latency, accuracy

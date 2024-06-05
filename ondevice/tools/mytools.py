@@ -29,7 +29,9 @@ def extract_blocks_from_multimodel(multimodel, savepath, method='all', model_typ
                 name = savepath + "block-{}-{}.pth".format(block_idx, block_choice)
                 torch.save(multimodel.multiblocks[block_idx][block_choice].state_dict(), name)
     elif method == 'jit':
-        example = torch.rand(1, 3, 224, 224).cuda()
+        example = torch.rand(1, 3, 224, 224)
+        if torch.cuda.is_available():
+            example.cuda()
         if model_type == 'resnet':
             formerlayers = torch.nn.Sequential(multimodel.conv1, multimodel.bn1, multimodel.relu, multimodel.maxpool)
 
@@ -287,8 +289,11 @@ def get_batchsize(model,input_size,device_id,alpha=1.1):
 
 def get_max_feature_size(model,input_size):
     model.eval()
-    model.cuda()
-    x = torch.rand(input_size).cuda()
+    if torch.cuda.is_available():
+        model.cuda()
+    x = torch.rand(input_size)
+    if torch.cuda.is_available():
+        x.cuda()
     x = model.maxpool(model.act1(model.bn1(model.conv1(x))))
     max_size = -1
     for blockidx in range(len(model.multiblocks)):
@@ -304,11 +309,14 @@ def save_sharedfeature(model,model_type,loader,idxs,method,save_path=None):
     elif 'mobilenetv2' in model_type:
         layers = [model.conv_stem, model.bn1, model.act1, model.multiblocks[0][0]]
     former_layers = torch.nn.Sequential(*layers)
-    former_layers = former_layers.cuda()
+    former_layers = former_layers
+    if torch.cuda.is_available():
+        former_layers.cuda()
     features = []
     for i, (input, target) in enumerate(loader):
-        input = input.cuda()
-        target = target.cuda()
+        if torch.cuda.is_available():
+            input = input.cuda()
+            target = target.cuda()
         if method == "AdaptiveNet":
             x = former_layers(input)
         else:
@@ -319,7 +327,8 @@ def save_sharedfeature(model,model_type,loader,idxs,method,save_path=None):
 def load_data(model, model_type, data_dir, save_path, method, load_times=None, batch_size=None, data_len=500):
     t1 = time.time()
     model.eval()
-    model.cuda()
+    if torch.cuda.is_available():
+        model.cuda()
     data_transform = transforms.Compose([
         transforms.Resize(224),
         transforms.CenterCrop(224),

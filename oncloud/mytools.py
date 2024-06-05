@@ -344,7 +344,8 @@ def test_lat(block, input, test_times):
     for i in range(test_times):
         t1 = time.time()
         y = block(input)
-        torch.cuda.synchronize()
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
         t2 = time.time() - t1
         if i > 200:
             lats.append(t2)
@@ -355,10 +356,14 @@ def test_fpn(block, input, test_times):
     lats = []
     s1, s2, s3 = input[0].shape, input[1].shape, input[2].shape
     for i in range(test_times):
-        x_inf = [torch.rand(s1).cuda(), torch.rand(s2).cuda(), torch.rand(s3).cuda()]
+        if torch.cuda.is_available():
+            x_inf = [torch.rand(s1).cuda(), torch.rand(s2).cuda(), torch.rand(s3).cuda()]
+        else:
+            x_inf = [torch.rand(s1), torch.rand(s2), torch.rand(s3)]
         t1 = time.time()
         y = block(x_inf)
-        torch.cuda.synchronize()
+        if torch.cuda.is_available():
+            torch.cuda.synchronize()
         t2 = time.time() - t1
         if i > 20:
             lats.append(t2)
@@ -377,27 +382,43 @@ def test_resnet_layer(layer, x):
 def get_lats(model):
     lats = []
     test_model = model.model
-    x = torch.rand(4, 3, 640, 640).cuda()
+    x = torch.rand(4, 3, 640, 640)
+    if torch.cuda.is_available():
+        x.cuda()
     f_layers = [test_model.backbone.conv1, test_model.backbone.bn1, test_model.backbone.act1, test_model.backbone.maxpool]
-    block = torch.nn.Sequential(*f_layers).cuda()
+    block = torch.nn.Sequential(*f_layers)
+    if torch.cuda.is_available():
+        block.cuda()
     lats.append(test_lat(block, x, 1000))
     x = block(x)
-    block = test_model.backbone.layer2.cuda()
+    block = test_model.backbone.layer2
+    if torch.cuda.is_available():
+        block.cuda()
     layer2lats, x1 = test_resnet_layer(block, x)
-    block = test_model.backbone.layer3.cuda()
+    block = test_model.backbone.layer3
+    if torch.cuda.is_available():
+        block.cuda()
     layer3lats, x2 = test_resnet_layer(block, x1)
-    block = test_model.backbone.layer4.cuda()
+    block = test_model.backbone.layer4
+    if torch.cuda.is_available():
+        block.cuda()
     layer4lats, x3 = test_resnet_layer(block, x2)
     lats += [layer2lats, layer3lats, layer4lats]
 
     print(x1.shape, x2.shape, x3.shape)
-    block = test_model.fpn.cuda()
+    block = test_model.fpn
+    if torch.cuda.is_available():
+        block.cuda()
     x = [x1, x2, x3]
     latter_lat = test_fpn(block, x, 1000)
     x = block(x)
-    block = test_model.class_net.cuda()
+    block = test_model.class_net
+    if torch.cuda.is_available():
+        block.cuda()
     latter_lat += test_lat(block, x, 1000)
-    block = test_model.box_net.cuda()
+    block = test_model.box_net
+    if torch.cuda.is_available():
+        block.cuda()
     latter_lat += test_lat(block, x, 1000)
     lats.append(latter_lat)
     return lats
