@@ -339,7 +339,10 @@ def load_data(model, model_type, data_dir, save_path, method, load_times=None, b
     dataset_eval = torchvision.datasets.ImageFolder(root=data_dir,transform=data_transform)
     idxs = [i for i in range(3000)]
     if load_times is None:
-        batch_size = get_batchsize(model,(2,3,224,224),0)
+        if torch.cuda.is_available():
+            batch_size = get_batchsize(model,(2,3,224,224),0)
+        else:
+            batch_size = 1
         load_times  = math.ceil(len(dataset_eval)/batch_size)
     load_img_num = math.ceil(data_len / load_times)
     for i in range(load_times-1):
