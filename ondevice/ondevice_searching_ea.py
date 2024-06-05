@@ -473,9 +473,9 @@ def main():
     lens = layer_lens if "mobilenetv2" in args.model else None
     finder = EvolutionFinder(batch_size=args.batch_size, population_size=args.population_size, branch_choices=model.block_choices, time_budget=args.time_budget/1000, searching_times=args.searching_times, lats=lats, model_lens=lens)
     if args.method == "AdaptiveNet":
-        _, best_info = finder.evolution_search(model, validate, args, loss_fn)
+        _, best_info = finder.evolution_search(model, validate, loader_eval, args, loss_fn)
     elif args.method == "BaseLine0":
-        _, best_info = finder.evolution_search_baseline1(model, validate, args, loss_fn)
+        _, best_info = finder.evolution_search_baseline1(model, validate, loader_eval, args, loss_fn)
 
     best_subnet = best_info[1]
     t2 = time.time()
