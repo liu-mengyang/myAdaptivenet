@@ -104,7 +104,7 @@ parser.add_argument('--channels-last', action='store_true', default=False,
                     help='Use channels_last memory layout')
 parser.add_argument('--tta', type=int, default=0, metavar='N',
                     help='Test/inference time augmentation (oversampling) factor. 0=None (default: 0)')
-parser.add_argument('--GPU', action='store_true', default=True,
+parser.add_argument('--GPU', action='store_true', default=False,
                     help='Use GPU')
 parser.add_argument("--log_interval", default=200, type=int)
 parser.add_argument("--warmupbatches", default=10, type=int)
