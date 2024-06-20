@@ -21,7 +21,7 @@ def evaluate_latency(model, input_shape, backend, command):
         f"{AUTOTAILOR_HOME}/configs/backends/{backend}.json",
         f"{AUTOTAILOR_HOME}/configs/commands/{command}.json",
     )
-    model.cuda()
+    # model.cuda()
     return latency.avg / 1000  # convert to ms
 
 def evaluate_accuracy(model, evaluate):

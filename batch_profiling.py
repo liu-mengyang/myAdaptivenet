@@ -106,7 +106,7 @@ parser.add_argument('--channels-last', action='store_true', default=False,
                     help='Use channels_last memory layout')
 parser.add_argument('--tta', type=int, default=0, metavar='N',
                     help='Test/inference time augmentation (oversampling) factor. 0=None (default: 0)')
-parser.add_argument('--GPU', action='store_true', default=False,
+parser.add_argument('--GPU', action='store_true', default=True,
                     help='Use GPU')
 parser.add_argument("--log_interval", default=200, type=int)
 parser.add_argument("--warmupbatches", default=10, type=int)
@@ -138,17 +138,18 @@ parser.add_argument("--command", default="ncnn_cpu_f0_fp16", type=str)
 parser.add_argument("--range", nargs="+", default=None)
 parser.add_argument("--benchmark", action='store_true', default=False)
 parser.add_argument("--subnet_save_path", type=str, default=None)
-parser.add_argument("--disable_profiling", action="store_true", default=False)
-parser.add_argument("--disable_evaluate", action="store_true", default=False)
+    
+
 
 args = parser.parse_args()
 
 print("""Usage:
-python3 ondevice_searchin_ea.py \\
+python3 batch_profiling.py \\
     --model {resnet50|mbv2} \\
-    --range min max step \\
     --framework {tflite|ncnn} \\
-    --device {samsung0|samsung1|redmi0|honor0}""")
+    --device {samsung0|samsung1|redmi0|honor0} \\
+    --command {command} \\
+    --subnet_save_path {subnets path}""")
 
 if args.model == 'resnet50':
     args.model_path = 'weights/resnet1epoch59acc69.pth'
@@ -186,24 +187,6 @@ def test_lat(block, input, test_times, block_idx=0, choice_idx=0):
         COMMAND_CONFIG
     )
 
-def get_resnet_lats_cpu(model, batchsize=1, test_times=500):
-    model.eval()
-    x = torch.rand(batchsize, 3, 224, 224)
-    lats = []
-    layers = [model.conv1, model.bn1, model.act1, model.maxpool]
-    former_layers = nn.Sequential(*layers)
-    lats.append(test_lat(former_layers, x, test_times, 99, 98))
-    x = former_layers(x)
-    for blockidx in range(len(model.multiblocks)):
-        lats.append([])
-        for choiceidx in range(len(model.multiblocks[blockidx])):
-            lats[-1].append(test_lat(model.multiblocks[blockidx][choiceidx], x, test_times, blockidx, choiceidx))
-        x = model.multiblocks[blockidx][0](x)
-    f_layers = [model.global_pool, model.fc]
-    latter_layers = nn.Sequential(*f_layers)
-    lats.append(test_lat(latter_layers, x, test_times, 99, 99))
-    return lats
-
 def get_resnet_lats(model, batchsize, test_times=500):
     model.eval()
     model.cuda()
@@ -222,24 +205,6 @@ def get_resnet_lats(model, batchsize, test_times=500):
     f_layers = [model.global_pool, model.fc]
     latter_layers = nn.Sequential(*f_layers)
     lats.append(test_lat(latter_layers, x, test_times, 99, 99))
-    return lats
-
-def get_mbv_lats_cpu(model, batchsize=1, test_times=1000):
-    model.eval()
-    x = torch.rand(batchsize, 3, 224, 224)
-    lats = []
-    layers = [model.conv_stem, model.bn1, model.act1]
-    former_layers = nn.Sequential(*layers)
-    lats.append(test_lat(former_layers, x, test_times))
-    x = former_layers(x)
-    for blockidx in range(len(model.multiblocks)):
-        lats.append([])
-        for choiceidx in range(len(model.multiblocks[blockidx])):
-            lats[-1].append(test_lat(model.multiblocks[blockidx][choiceidx], x, test_times))
-        x = model.multiblocks[blockidx][0](x)
-    f_layers = [model.conv_head, model.bn2, model.act2, model.global_pool, model.classifier]
-    latter_layers = nn.Sequential(*f_layers)
-    lats.append(test_lat(latter_layers, x, test_times))
     return lats
 
 def get_mbv_lats(model, batchsize, test_times=1000):
@@ -399,7 +364,7 @@ def warmup(model, args, warmuptime, teachermodel=False, subnet=None):
 
 
 def main():
-    logger.add(f"{args.model}_adapt.txt")
+    logger.add(f"{args.model}_profiling.txt")
     args.prefetcher = not args.no_prefetcher
     args.distributed = False
     args.world_size = 1
@@ -435,8 +400,7 @@ def main():
     global_var.set_value('validated_feature', set())
     global_var.set_value('need_save_feature', set())
     model.load_state_dict(torch.load(args.model_path, map_location=torch.device('cpu')), strict=True)
-    if args.GPU:
-        model.cuda()
+    model.cuda()
     if args.method == "AdaptiveNet":
         mytools.load_data(model,args.model,args.data_dir,args.save_path, method = args.method, load_times=args.load_times,batch_size=args.batch_size,data_len=args.data_len)
     elif args.method == "BaseLine0":
@@ -461,211 +425,24 @@ def main():
         model.apply_subnet(subnet)
         dummy_input = torch.randn(1, 3, 224, 224)
         from thop import profile
-        flops, _ = profile(model, inputs=(dummy_input,), verbose=False)
-        if args.disable_profiling:
-            latency = 0.0
-        else:
-            latency = evaluate_latency(model, (1, 3, 224, 224), BACKEND_CONFIG, COMMAND_CONFIG)
-            
-        if args.disable_evaluate:
-            accuracy = 0.0
-        else:
-            flops, _ = profile(model, inputs=(dummy_input.cuda(),), verbose=False)
-            accuracy = evaluate_accuracy(model, EVALUATE_CONFIG)
+        flops, _ = profile(model, inputs=(dummy_input.cuda(),), verbose=False)
+        latency = evaluate_latency(model, (1, 3, 224, 224), BACKEND_CONFIG, COMMAND_CONFIG)
+        accuracy = evaluate_accuracy(model, EVALUATE_CONFIG)
         return flops, latency, accuracy
     
-    if args.benchmark:
-        max_subnet = model.generate_random_subnet()
-        max_subnet = [0 for _ in range(len(max_subnet))]
-        min_subnet = model.generate_random_subnet()
-        min_subnet = [2 for _ in range(len(min_subnet))]
-        min_subnet[-2] = 1
-        min_subnet[-1] = 0
-    
-        max_subnet_flops, max_subnet_latency, max_subnet_accuracy = profile(model, max_subnet)
-        min_subnet_flops, min_subnet_latency, min_subnet_accuracy = profile(model, min_subnet)
-        print(max_subnet_accuracy, max_subnet_latency)
-        print(min_subnet_accuracy, min_subnet_latency)
-    
-        
-    # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    # baseline_subnet = model.generate_random_subnet()
-    # baseline_subnet = [0 for _ in range(len(baseline_subnet))]
-    # model.apply_subnet(baseline_subnet)
-    # baseline_latency = evaluate_latency(model, (1, 3, 224, 224), BACKEND_CONFIG, COMMAND_CONFIG)
-    # baseline_accuracy = evaluate_accuracy(model, EVALUATE_CONFIG)
-    # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    t1 = time.time()
-    if "resnet" in args.model:
-        lats_cache = f"./npy/{args.model}_{args.framework}_{args.device}_lats.npy"
-    else:
-        lats_cache = f"./npy/{args.model}_{args.framework}_{args.device}_{args.command}_lats.npy"
-    if os.path.exists(lats_cache):
-        print("Cache exists, loading lats from cache!")
-        lats = np.load(lats_cache, allow_pickle=True)
-    else:
-        if "resnet" in args.model:
-            if args.device == "board":
-                lats = get_resnet_lats_cpu(model)
-            else:    
-                lats = get_resnet_lats(model, batchsize=args.batch_size_for_lat)
-        else:
-            if args.device == "board":
-                lats = get_mbv_lats_cpu(model)
-            else:
-                lats = get_mbv_lats(model, batchsize=args.batch_size_for_lat)
-        print(lats)
-        np.save(lats_cache, lats)
-        if args.benchmark:
-            return
-    loss_fn = nn.CrossEntropyLoss()
-    if args.GPU:
-        loss_fn.cuda()
-    lut_time = time.time() - t1
+    with open(args.subnet_save_path, 'r') as f:
+        subnets = json.load(f)
+
+    for constraint, subnet in subnets.items():
+        model.apply_subnet(subnet['subnet'])
+        best_latency = evaluate_latency(model, (1, 3, 224, 224), BACKEND_CONFIG, COMMAND_CONFIG)
+        subnet['latency'] = best_latency*1000
+
+        logger.info(f"Constraint: {constraint}, latency: {best_latency*1000}, accuracy {subnet['accuracy']}\n")
     
-    t1 = time.time()
-
-    data_transform = transforms.Compose([
-        transforms.Resize(224),
-        transforms.CenterCrop(224),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.485, 0.456, 0.406],
-                            std=[0.229, 0.224, 0.225])
-    ])
-    dataset_eval = torchvision.datasets.ImageFolder(root=args.data_dir,transform=data_transform)
-    idxs = np.load('./npy/idxs.npy').tolist()[:args.data_len]
-    eval_set = Subset(dataset_eval, idxs)
-    loader_eval = torch.utils.data.DataLoader(eval_set, batch_size=args.batch_size, shuffle=True, num_workers=args.num_workers)
-    lens = layer_lens if "mobilenetv2" in args.model else None
-    if args.range:
-        start = float(args.range[0])
-        end = float(args.range[1])
-        step = float(args.range[2])
-        time_budget = start
-        def flatten_list(l):
-            flat_l = []
-            for item in l:
-                if type(item) == list:
-                    flat_l.extend(flatten_list(item))
-                else:
-                    flat_l.append(item)
-            return flat_l
-        while time_budget <= end:
-            t1 = time.time()
-            finder = EvolutionFinder(batch_size=args.batch_size, population_size=args.population_size, branch_choices=model.block_choices, time_budget=time_budget/1000, searching_times=args.searching_times, lats=lats, model_lens=lens)
-            if args.method == "AdaptiveNet":
-                _, best_info = finder.evolution_search(model, validate, args, loss_fn)
-            elif args.method == "BaseLine0":
-                _, best_info = finder.evolution_search_baseline1(model, validate, args, loss_fn)
-            best_subnet = best_info[1]
-            t2 = time.time()
-            evolution_time = time.time() - t1
-            model.apply_subnet(best_subnet)
-            best_latency = evaluate_latency(model, (1, 3, 224, 224), BACKEND_CONFIG, COMMAND_CONFIG)
-            best_accuracy = evaluate_accuracy(model, EVALUATE_CONFIG)
-            n_blocks = len(flatten_list(lats))
-            n = len(best_subnet)
-            f = [1] * (n + 5)
-            f[2] = 2
-            for i in range(3, n + 1):
-                f[i] = f[i - 1] + f[i - 2] + f[i - 3]
-            n_subnets = f[n]
-            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-            print("LUT Time Cost\t", lut_time)
-            print("Evolution Time Cost (excluded LUT)\t", evolution_time)
-            print("Time Constraint:", time_budget)
-            print("Best Latency:", best_latency*1000)
-            print("Best Accuracy:", best_accuracy)
-            if args.benchmark:
-                print("Min latency:", min_subnet_latency)
-            with open(f"{args.model}_re_1.log", "a") as f:
-                f.write(f"\n\n=== Model: {args.model}, Framework: {args.framework}, Device: {args.device}, Latency Constraint: {time_budget} ===\n")
-                f.write(f"LUT Time Cost\t{lut_time}\n")
-                f.write(f"Evolution Time Cost (excluded LUT)\t{evolution_time}\n\n")
-                f.write(f"Best Latency\t{best_latency*1000}\n")
-                f.write(f"Best Accuracy\t{best_accuracy}\n\n")
-                f.write(f"#Blocks\t{n_blocks}\t\t#Subnets\t{n_subnets}\n")
-            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-            logger.info(f"Constraint: {time_budget}, latency: {best_latency*1000}, accuracy: {best_accuracy}")
-            with open(f"{args.model}_re_1.log", "a") as f:
-                f.write(f"Constraint: {time_budget}, latency_pred: {best_info[3] * 1000}, latency: {best_latency*1000}, accuracy_pred: {best_info[2]}, accuracy: {best_accuracy}, evolution_time: {evolution_time}\n")
-            time_budget += step
-    else:
-        #single
-    
-        finder = EvolutionFinder(batch_size=args.batch_size, population_size=args.population_size, branch_choices=model.block_choices, time_budget=args.time_budget/1000, searching_times=args.searching_times, lats=lats, model_lens=lens)
-        if args.method == "AdaptiveNet":
-            _, best_info = finder.evolution_search(model, validate, args, loss_fn)
-        elif args.method == "BaseLine0":
-            _, best_info = finder.evolution_search_baseline1(model, validate, args, loss_fn)
-
-        best_subnet = best_info[1]
-        t2 = time.time()
-        evolution_time = time.time() - t1
-
-        subnets = {}
-        if os.path.exists(args.subnet_save_path):
-            with open(args.subnet_save_path, 'r') as f:
-                subnets = json.load(f)
-    
-    
-        # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        model.apply_subnet(best_subnet)
-        best_latency = 0
-        if args.disable_profiling == False:
-            best_latency = evaluate_latency(model, (1, 3, 224, 224), BACKEND_CONFIG, COMMAND_CONFIG)
-        best_accuracy = evaluate_accuracy(model, EVALUATE_CONFIG)
-        # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-        subnets[args.time_budget] = {"subnet": best_subnet, "accuracy": best_accuracy}
-
-        with open(args.subnet_save_path, 'w') as f:
-            json.dump(subnets, f, indent=4)
-        
-        def flatten_list(l):
-            flat_l = []
-            for item in l:
-                if type(item) == list:
-                    flat_l.extend(flatten_list(item))
-                else:
-                    flat_l.append(item)
-            return flat_l
-        n_blocks = len(flatten_list(lats))
-        n = len(best_subnet)
-        f = [1] * (n + 5)
-        f[2] = 2
-        for i in range(3, n + 1):
-            f[i] = f[i - 1] + f[i - 2] + f[i - 3]
-        n_subnets = f[n]
-
-        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-        # print("Baseline Latency\t", baseline_latency*1000)
-        # print("Baseline Accuracy\t", baseline_accuracy)
-        print("LUT Time Cost\t", lut_time)
-        print("Evolution Time Cost (excluded LUT)\t", evolution_time)
-        print("Time Constraint:", args.time_budget)
-        print("Best Latency:", best_latency*1000)
-        print("Best Accuracy:", best_accuracy)
-        with open("results_{args.model}.log", "a") as f:
-            f.write(f"\n\n=== Model: {args.model}, Framework: {args.framework}, Device: {args.device}, Latency Constraint: {args.time_budget} ===\n")
-            # f.write(f"Baseline Latency\t{baseline_latency*1000}\n")
-            # f.write(f"Baseline Accuracy\t{baseline_accuracy}\n\n")
-            if args.benchmark:
-                f.write(f"Max Subnet Latency\t{max_subnet_latency*1000}\n")
-                f.write(f"Max Subnet Accuracy\t{max_subnet_accuracy}\n")
-                # f.write(f"Max Subnet Flops\t{max_subnet_flops}\n\n")
-                f.write(f"Min Subnet Latency\t{min_subnet_latency*1000}\n")
-                f.write(f"Min Subnet Accuracy\t{min_subnet_accuracy}\n")
-            # f.write(f"Min Subnet Flops\t{min_subnet_flops}\n\n")
-            f.write(f"LUT Time Cost\t{lut_time}\n")
-            f.write(f"Evolution Time Cost (excluded LUT)\t{evolution_time}\n\n")
-            f.write(f"Best Latency\t{best_latency*1000}\n")
-            f.write(f"Best Accuracy\t{best_accuracy}\n\n")
-            f.write(f"#Blocks\t{n_blocks}\t\t#Subnets\t{n_subnets}\n")
-        print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-        logger.info(f"Constraint: {args.time_budget}, latency: {best_latency*1000}, accuracy: {best_accuracy}")
-        with open(f"{args.model}_re_1.log", "a") as f:
-            f.write(f"Constraint: {args.time_budget}, latency_pred: {best_info[3] * 1000}, latency: {best_latency*1000}, accuracy_pred: {best_info[2]}, accuracy: {best_accuracy}, evolution_time: {evolution_time}\n")
+    with open(args.subnet_save_path, 'w') as f:
+        json.dump(subnet, f, indent=4)
 
 
 if __name__ == '__main__':
